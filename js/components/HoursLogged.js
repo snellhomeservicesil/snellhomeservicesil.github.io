@@ -6,7 +6,7 @@ function HoursLogged({ project, onUpdate }) {
     // Helper functions (fallback if utils.js not loaded yet)
     const getTodayDate = () => new Date().toISOString().split('T')[0];
     const getMemberName = (memberId) => {
-        const member = project?.teamMembers.find(m => m.id === memberId);
+        const member = project?.teamMembers.find(m => m.id === Number(memberId));
         return member ? member.name : 'Unknown';
     };
 
@@ -19,11 +19,11 @@ function HoursLogged({ project, onUpdate }) {
     });
 
     const handleAdd = () => {
-        if (!form.teamMemberId || !form.hours) return;
+        if (!form.teamMemberId || !form.hours) return;        
 
         const newHours = {
             id: Date.now(),
-            teamMemberId: form.teamMemberId,
+            teamMemberId: Number(form.teamMemberId),
             date: form.date,
             hours: parseFloat(form.hours)
         };
@@ -44,7 +44,7 @@ function HoursLogged({ project, onUpdate }) {
             ...project,
             hours: project.hours.map(h =>
                 h.id === editing.id
-                    ? { ...h, teamMemberId: form.teamMemberId, date: form.date, hours: parseFloat(form.hours) }
+                    ? { ...h, teamMemberId: Number(form.teamMemberId), date: form.date, hours: parseFloat(form.hours) }
                     : h
             )
         });
