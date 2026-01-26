@@ -37,7 +37,6 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
         if (!projectForm.name || !projectForm.agreedPrice) return;
 
         const newProject = {
-            id: Date.now(),
             name: projectForm.name,
             agreedPrice: parseFloat(projectForm.agreedPrice),
             description: projectForm.description,
@@ -95,19 +94,19 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                 type: "text",
                 placeholder: "Project Name",
                 value: projectForm.name,
-                onChange: e => setProjectForm({ ...projectForm, name: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, name: event.target.value }),
                 className: "w-full p-2 mb-2 border rounded-lg"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Agreed Price ($)",
                 value: projectForm.agreedPrice,
-                onChange: e => setProjectForm({ ...projectForm, agreedPrice: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, agreedPrice: event.target.value }),
                 className: "w-full p-2 mb-2 border rounded-lg"
             }),
             e('select', {
                 value: projectForm.status,
-                onChange: e => setProjectForm({ ...projectForm, status: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, status: event.target.value }),
                 className: "w-full p-2 mb-2 border rounded-lg"
             },
                 statusOptions.map(status =>
@@ -117,7 +116,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
             e('textarea', {
                 placeholder: "Description",
                 value: projectForm.description,
-                onChange: e => setProjectForm({ ...projectForm, description: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, description: event.target.value }),
                 className: "w-full p-2 mb-3 border rounded-lg",
                 rows: "2"
             }),
@@ -188,19 +187,19 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                 type: "text",
                 placeholder: "Project Name",
                 value: projectForm.name,
-                onChange: e => setProjectForm({ ...projectForm, name: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, name: event.target.value }),
                 className: "w-full p-2 mb-2 border rounded-lg"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Agreed Price ($)",
                 value: projectForm.agreedPrice,
-                onChange: e => setProjectForm({ ...projectForm, agreedPrice: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, agreedPrice: event.target.value }),
                 className: "w-full p-2 mb-2 border rounded-lg"
             }),
             e('select', {
                 value: projectForm.status,
-                onChange: e => setProjectForm({ ...projectForm, status: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, status: event.target.value }),
                 className: "w-full p-2 mb-2 border rounded-lg"
             },
                 statusOptions.map(status =>
@@ -210,7 +209,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
             e('textarea', {
                 placeholder: "Description",
                 value: projectForm.description,
-                onChange: e => setProjectForm({ ...projectForm, description: e.target.value }),
+                onChange: event => setProjectForm({ ...projectForm, description: event.target.value }),
                 className: "w-full p-2 mb-3 border rounded-lg",
                 rows: "2"
             }),
