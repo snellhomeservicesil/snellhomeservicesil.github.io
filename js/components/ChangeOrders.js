@@ -70,14 +70,14 @@ function ChangeOrders({ project, onUpdate }) {
                 placeholder: "Description",
                 value: form.description,
                 onChange: e => setForm({ ...form, description: e.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Price Adjustment ($)",
                 value: form.price,
                 onChange: e => setForm({ ...form, price: e.target.value }),
-                className: "w-full p-2 mb-3 border rounded-lg"
+                className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('div', { className: "flex gap-2" },
                 e('button', {
@@ -95,27 +95,30 @@ function ChangeOrders({ project, onUpdate }) {
         ),
 
         // Edit Form
-        editing && e('div', { className: "mb-4 p-4 bg-amber-50 rounded-lg border-2 border-amber-300" },
-            e('h3', { className: "font-semibold mb-3 text-slate-700" }, 'Edit Change Order'),
+        editing && e('div', { className: "mb-4 p-4 bg-slate-700 rounded-lg border-2 border-amber-500" },
+            e('h3', { className: "font-semibold mb-3 text-white" }, 'Edit Change Order'),
             e('input', {
                 type: "text",
                 placeholder: "Description",
                 value: form.description,
                 onChange: e => setForm({ ...form, description: e.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Price Adjustment ($)",
                 value: form.price,
                 onChange: e => setForm({ ...form, price: e.target.value }),
-                className: "w-full p-2 mb-3 border rounded-lg"
+                className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('div', { className: "flex gap-2" },
                 e('button', {
                     onClick: handleUpdate,
-                    className: "flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
-                }, 'Update'),
+                    className: "flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 flex items-center justify-center gap-2"
+                },
+                    e(Icon, { d: "M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z", size: 16 }),
+                    ' Update'
+                ),
                 e('button', {
                     onClick: () => {
                         setEditing(null);
@@ -131,12 +134,12 @@ function ChangeOrders({ project, onUpdate }) {
             project.changeOrders.map(co =>
                 e('div', {
                     key: co.id,
-                    className: "p-3 bg-slate-50 rounded-lg border border-slate-200"
+                    className: "p-3 bg-slate-700 rounded-lg border border-slate-600"
                 },
                     e('div', { className: "flex items-center justify-between" },
                         e('div', null,
-                            e('h3', { className: "font-semibold text-slate-800" }, co.description),
-                            e('p', { className: "text-sm text-green-600 font-semibold" },
+                            e('h3', { className: "font-semibold text-white" }, co.description),
+                            e('p', { className: "text-sm text-green-400 font-semibold" },
                                 '+$', co.price.toLocaleString()
                             )
                         ),
@@ -149,11 +152,11 @@ function ChangeOrders({ project, onUpdate }) {
                                         price: co.price.toString()
                                     });
                                 },
-                                className: "p-1 text-blue-600 hover:bg-blue-100 rounded"
+                                className: "p-1 text-blue-400 hover:text-blue-300 hover:bg-blue-900 rounded transition-all duration-200 hover:scale-110"
                             }, e(Icon, { d: "M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z", size: 16 })),
                             e('button', {
                                 onClick: () => handleDelete(co.id),
-                                className: "p-1 text-red-600 hover:bg-red-100 rounded"
+                                className: "p-1 text-red-400 hover:text-red-300 hover:bg-red-900 rounded transition-all duration-200 hover:scale-110"
                             }, e(Icon, { d: "M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2", size: 16 }))
                         )
                     )

@@ -37,6 +37,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
         if (!projectForm.name.trim() || !projectForm.agreedPrice) return;
 
         const newProject = {
+            id: crypto.randomUUID(), // Generate UUID before adding to state
             name: projectForm.name.trim(),
             agreedPrice: parseFloat(projectForm.agreedPrice),
             description: projectForm.description.trim(),
@@ -45,7 +46,9 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
             hours: [],
             changeOrders: [],
             materials: [],
-            payments: []
+            payments: [],
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
         };
 
         onProjectsChange([...projects, newProject]);

@@ -36,6 +36,34 @@ function App() {
         }
     };
 
+    // Refresh a single project from the database
+    const refreshSelectedProject = async (projectId) => {
+        if (!supabase || !projectId) return;
+        
+        try {
+            console.log('Refreshing project data for:', projectId);
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('id', projectId)
+                .single();
+            
+            if (error) {
+                console.error('Error refreshing project:', error);
+                return;
+            }
+            
+            if (data) {
+                console.log('Project refreshed:', data);
+                setSelectedProject(data);
+                // Also update in the projects list
+                setProjects(projects.map(p => p.id === projectId ? data : p));
+            }
+        } catch (err) {
+            console.error('Error refreshing project:', err);
+        }
+    };
+
     // Initialize Supabase and load user on mount
     useEffect(() => {
         const initSupabase = async () => {
@@ -188,7 +216,13 @@ function App() {
                         e(ProjectList, {
                             projects: projects,
                             selectedProject: selectedProject,
-                            onSelectProject: setSelectedProject,
+                            onSelectProject: (project) => {
+                                setSelectedProject(project);
+                                // Refresh the project data from the database
+                                if (project && project.id) {
+                                    refreshSelectedProject(project.id);
+                                }
+                            },
                             onProjectsChange: setProjects
                         })
                     ),
