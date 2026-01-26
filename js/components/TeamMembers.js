@@ -8,12 +8,12 @@ function TeamMembers({ project, onUpdate }) {
     const [form, setForm] = useState({ name: '', role: '', hourlyRate: '' });
 
     const handleAdd = () => {
-        if (!form.name || !form.hourlyRate) return;
+        if (!form.name.trim() || !form.hourlyRate) return;
         
         const newMember = {
             id: Date.now(),
-            name: form.name,
-            role: form.role,
+            name: form.name.trim(),
+            role: form.role.trim(),
             hourlyRate: parseFloat(form.hourlyRate)
         };
 
@@ -27,13 +27,13 @@ function TeamMembers({ project, onUpdate }) {
     };
 
     const handleUpdate = () => {
-        if (!form.name || !form.hourlyRate) return;
+        if (!form.name.trim() || !form.hourlyRate) return;
 
         onUpdate({
             ...project,
             teamMembers: project.teamMembers.map(tm =>
                 tm.id === editing.id
-                    ? { ...tm, name: form.name, role: form.role, hourlyRate: parseFloat(form.hourlyRate) }
+                    ? { ...tm, name: form.name.trim(), role: form.role.trim(), hourlyRate: parseFloat(form.hourlyRate) }
                     : tm
             )
         });
@@ -43,6 +43,10 @@ function TeamMembers({ project, onUpdate }) {
     };
 
     const handleDelete = (memberId) => {
+        if (!confirm('Are you sure you want to delete this team member? This action cannot be undone.')) {
+            return;
+        }
+        
         onUpdate({
             ...project,
             teamMembers: project.teamMembers.filter(m => m.id !== memberId),
@@ -63,10 +67,10 @@ function TeamMembers({ project, onUpdate }) {
         return totalHours * hourlyRate;
     };
 
-    return e('div', { className: "bg-white rounded-xl shadow-lg p-6" },
+    return e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700" },
         e('div', { className: "flex items-center justify-between mb-4" },
             e('div', { className: "flex items-center gap-2" },
-                e('h2', { className: "text-xl font-bold text-slate-800" }, 'Team Members')
+                e('h2', { className: "text-xl font-bold text-white" }, 'Team Members')
             ),
             e('button', {
                 onClick: () => setShowForm(true),
@@ -75,27 +79,27 @@ function TeamMembers({ project, onUpdate }) {
         ),
 
         // Add Form
-        showForm && e('div', { className: "mb-4 p-4 bg-slate-50 rounded-lg border-2 border-green-200" },
+        showForm && e('div', { className: "mb-4 p-4 bg-slate-700 rounded-lg border-2 border-green-500" },
             e('input', {
                 type: "text",
                 placeholder: "Name",
                 value: form.name,
                 onChange: e => setForm({ ...form, name: e.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "text",
                 placeholder: "Role",
                 value: form.role,
                 onChange: e => setForm({ ...form, role: e.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Hourly Rate ($)",
                 value: form.hourlyRate,
                 onChange: e => setForm({ ...form, hourlyRate: e.target.value }),
-                className: "w-full p-2 mb-3 border rounded-lg"
+                className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('div', { className: "flex gap-2" },
                 e('button', {
@@ -113,34 +117,37 @@ function TeamMembers({ project, onUpdate }) {
         ),
 
         // Edit Form
-        editing && e('div', { className: "mb-4 p-4 bg-amber-50 rounded-lg border-2 border-amber-300" },
-            e('h3', { className: "font-semibold mb-3 text-slate-700" }, 'Edit Team Member'),
+        editing && e('div', { className: "mb-4 p-4 bg-slate-700 rounded-lg border-2 border-amber-500" },
+            e('h3', { className: "font-semibold mb-3 text-white" }, 'Edit Team Member'),
             e('input', {
                 type: "text",
                 placeholder: "Name",
                 value: form.name,
                 onChange: e => setForm({ ...form, name: e.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "text",
                 placeholder: "Role",
                 value: form.role,
                 onChange: e => setForm({ ...form, role: e.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Hourly Rate ($)",
                 value: form.hourlyRate,
                 onChange: e => setForm({ ...form, hourlyRate: e.target.value }),
-                className: "w-full p-2 mb-3 border rounded-lg"
+                className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('div', { className: "flex gap-2" },
                 e('button', {
                     onClick: handleUpdate,
-                    className: "flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
-                }, 'Update'),
+                    className: "flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 flex items-center justify-center gap-2"
+                },
+                    e(Icon, { d: "M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z", size: 16 }),
+                    ' Update'
+                ),
                 e('button', {
                     onClick: () => {
                         setEditing(null);
@@ -159,16 +166,16 @@ function TeamMembers({ project, onUpdate }) {
                 
                 return e('div', {
                     key: member.id,
-                    className: "p-3 bg-slate-50 rounded-lg border border-slate-200"
+                    className: "p-3 bg-slate-700 rounded-lg border border-slate-600"
                 },
                     e('div', { className: "flex items-center justify-between" },
                         e('div', { className: "flex-1" },
-                            e('h3', { className: "font-semibold text-slate-800" }, member.name),
-                            e('p', { className: "text-sm text-slate-600" },
+                            e('h3', { className: "font-semibold text-white" }, member.name),
+                            e('p', { className: "text-sm text-slate-400" },
                                 member.role, ' • $', member.hourlyRate, '/hr • ',
                                 totalHours, ' hrs'
                             ),
-                            e('p', { className: "text-sm font-semibold text-green-700 mt-1" },
+                            e('p', { className: "text-sm font-semibold text-green-400 mt-1" },
                                 'Labor Cost: $', laborCost.toLocaleString()
                             )
                         ),
@@ -182,11 +189,11 @@ function TeamMembers({ project, onUpdate }) {
                                         hourlyRate: member.hourlyRate.toString()
                                     });
                                 },
-                                className: "p-1 text-blue-600 hover:bg-blue-100 rounded"
+                                className: "p-1 text-blue-400 hover:text-blue-300 hover:bg-blue-900 rounded transition-all duration-200 hover:scale-110"
                             }, e(Icon, { d: "M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z", size: 16 })),
                             e('button', {
                                 onClick: () => handleDelete(member.id),
-                                className: "p-1 text-red-600 hover:bg-red-100 rounded"
+                                className: "p-1 text-red-400 hover:text-red-300 hover:bg-red-900 rounded transition-all duration-200 hover:scale-110"
                             }, e(Icon, { d: "M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2", size: 16 }))
                         )
                     )

@@ -136,14 +136,14 @@ function App() {
         setSelectedProject(updatedProject);
     };
 
-    return e('div', { className: "min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6" },
+    return e('div', { className: "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-6" },
         e('div', { className: "max-w-7xl mx-auto" },
             // Header
-            e('div', { className: "bg-white rounded-xl shadow-lg p-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" },
+            e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border border-slate-700" },
                 e('div', { },
-                    e('h1', { className: "text-3xl font-bold text-slate-800 mb-2" }, 'Construction Projects Tracker'),
-                    e('p', { className: "text-slate-600" }, 'Manage your projects, team, hours, materials, payments, and budgets'),
-                    currentUser && e('p', { className: "text-sm text-slate-500 mt-2" }, `Logged in as: ${currentUser.email}`)
+                    e('h1', { className: "text-3xl font-bold text-white mb-2" }, 'Construction Projects Tracker'),
+                    e('p', { className: "text-slate-300" }, 'Manage your projects, team, hours, materials, payments, and budgets'),
+                    currentUser && e('p', { className: "text-sm text-slate-400 mt-2" }, `Logged in as: ${currentUser.email}`)
                 ),
                 e('button', { 
                     onClick: handleLogout,
@@ -153,8 +153,8 @@ function App() {
 
             // Loading state
             loading
-                ? e('div', { className: "bg-white rounded-xl shadow-lg p-12 text-center" },
-                    e('p', { className: "text-slate-600 text-lg" }, 'Loading projects...')
+                ? e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-12 text-center border border-slate-700" },
+                    e('p', { className: "text-slate-300 text-lg" }, 'Loading projects...')
                 )
                 : e('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-6" },
                     // Sidebar - Project List
@@ -178,10 +178,10 @@ function App() {
                                 e(Materials, { project: selectedProject, onUpdate: updateProject }),
                                 e(Payments, { project: selectedProject, onUpdate: updateProject })
                             )
-                            : e('div', { className: "bg-white rounded-xl shadow-lg p-12 text-center" },
-                                e(Icon, { d: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z", size: 64 }),
-                                e('h2', { className: "text-2xl font-bold text-slate-800 mb-2" }, 'No Project Selected'),
-                                e('p', { className: "text-slate-600" }, 'Select a project from the sidebar or create a new one to get started')
+                            : e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-12 text-center border border-slate-700" },
+                                e(Icon, { d: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z", size: 64, className: "text-slate-600 mx-auto mb-4" }),
+                                e('h2', { className: "text-2xl font-bold text-white mb-2" }, 'No Project Selected'),
+                                e('p', { className: "text-slate-400" }, 'Select a project from the sidebar or create a new one to get started')
                             )
                     )
                 )

@@ -8,11 +8,11 @@ function ChangeOrders({ project, onUpdate }) {
     const [form, setForm] = useState({ description: '', price: '' });
 
     const handleAdd = () => {
-        if (!form.description || !form.price) return;
+        if (!form.description.trim() || !form.price) return;
 
         const newChangeOrder = {
             id: Date.now(),
-            description: form.description,
+            description: form.description.trim(),
             price: parseFloat(form.price)
         };
 
@@ -26,13 +26,13 @@ function ChangeOrders({ project, onUpdate }) {
     };
 
     const handleUpdate = () => {
-        if (!form.description || !form.price) return;
+        if (!form.description.trim() || !form.price) return;
 
         onUpdate({
             ...project,
             changeOrders: project.changeOrders.map(co =>
                 co.id === editing.id
-                    ? { ...co, description: form.description, price: parseFloat(form.price) }
+                    ? { ...co, description: form.description.trim(), price: parseFloat(form.price) }
                     : co
             )
         });
@@ -42,16 +42,20 @@ function ChangeOrders({ project, onUpdate }) {
     };
 
     const handleDelete = (changeOrderId) => {
+        if (!confirm('Are you sure you want to delete this change order? This action cannot be undone.')) {
+            return;
+        }
+        
         onUpdate({
             ...project,
             changeOrders: project.changeOrders.filter(co => co.id !== changeOrderId)
         });
     };
 
-    return e('div', { className: "bg-white rounded-xl shadow-lg p-6" },
+    return e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700" },
         e('div', { className: "flex items-center justify-between mb-4" },
             e('div', { className: "flex items-center gap-2" },
-                e('h2', { className: "text-xl font-bold text-slate-800" }, 'Change Orders')
+                e('h2', { className: "text-xl font-bold text-white" }, 'Change Orders')
             ),
             e('button', {
                 onClick: () => setShowForm(true),
@@ -60,7 +64,7 @@ function ChangeOrders({ project, onUpdate }) {
         ),
 
         // Add Form
-        showForm && e('div', { className: "mb-4 p-4 bg-slate-50 rounded-lg border-2 border-purple-200" },
+        showForm && e('div', { className: "mb-4 p-4 bg-slate-700 rounded-lg border-2 border-purple-500" },
             e('input', {
                 type: "text",
                 placeholder: "Description",

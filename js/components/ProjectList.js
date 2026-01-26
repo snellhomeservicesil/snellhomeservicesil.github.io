@@ -34,12 +34,12 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
     };
 
     const handleCreateProject = () => {
-        if (!projectForm.name || !projectForm.agreedPrice) return;
+        if (!projectForm.name.trim() || !projectForm.agreedPrice) return;
 
         const newProject = {
-            name: projectForm.name,
+            name: projectForm.name.trim(),
             agreedPrice: parseFloat(projectForm.agreedPrice),
-            description: projectForm.description,
+            description: projectForm.description.trim(),
             status: projectForm.status,
             teamMembers: [],
             hours: [],
@@ -54,23 +54,27 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
     };
 
     const handleUpdateProject = () => {
-        if (!projectForm.name || !projectForm.agreedPrice) return;
+        if (!projectForm.name.trim() || !projectForm.agreedPrice) return;
 
         const updatedProjects = projects.map(p =>
             p.id === editingProject.id
-                ? { ...p, name: projectForm.name, agreedPrice: parseFloat(projectForm.agreedPrice), description: projectForm.description, status: projectForm.status }
+                ? { ...p, name: projectForm.name.trim(), agreedPrice: parseFloat(projectForm.agreedPrice), description: projectForm.description.trim(), status: projectForm.status }
                 : p
         );
 
         onProjectsChange(updatedProjects);
         if (selectedProject?.id === editingProject.id) {
-            onSelectProject({ ...selectedProject, name: projectForm.name, agreedPrice: parseFloat(projectForm.agreedPrice), description: projectForm.description, status: projectForm.status });
+            onSelectProject({ ...selectedProject, name: projectForm.name.trim(), agreedPrice: parseFloat(projectForm.agreedPrice), description: projectForm.description.trim(), status: projectForm.status });
         }
         setEditingProject(null);
         setProjectForm({ name: '', agreedPrice: '', description: '', status: 'Scheduling' });
     };
 
     const handleDeleteProject = async (project) => {
+        if (!confirm(`Are you sure you want to delete "${project.name}"? This action cannot be undone.`)) {
+            return;
+        }
+        
         console.log('Delete clicked for project:', project);
         
         // First, try to delete from database if this is a saved project
@@ -112,9 +116,9 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
         }
     };
 
-    return e('div', { className: "bg-white rounded-xl shadow-lg p-6" },
+    return e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700" },
         e('div', { className: "flex items-center justify-between mb-4" },
-            e('h2', { className: "text-xl font-bold text-slate-800" }, 'Projects'),
+            e('h2', { className: "text-xl font-bold text-white" }, 'Projects'),
             e('button', {
                 onClick: () => setShowProjectForm(true),
                 className: "p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -122,26 +126,26 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
         ),
 
         // Create Project Form
-        showProjectForm && e('div', { className: "mb-4 p-4 bg-slate-50 rounded-lg border-2 border-blue-200" },
-            e('h3', { className: "font-semibold mb-3 text-slate-700" }, 'New Project'),
+        showProjectForm && e('div', { className: "mb-4 p-4 bg-slate-700 rounded-lg border-2 border-blue-500" },
+            e('h3', { className: "font-semibold mb-3 text-white" }, 'New Project'),
             e('input', {
                 type: "text",
                 placeholder: "Project Name",
                 value: projectForm.name,
                 onChange: event => setProjectForm({ ...projectForm, name: event.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Agreed Price ($)",
                 value: projectForm.agreedPrice,
                 onChange: event => setProjectForm({ ...projectForm, agreedPrice: event.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('select', {
                 value: projectForm.status,
                 onChange: event => setProjectForm({ ...projectForm, status: event.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white"
             },
                 statusOptions.map(status =>
                     e('option', { key: status, value: status }, status)
@@ -151,7 +155,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                 placeholder: "Description",
                 value: projectForm.description,
                 onChange: event => setProjectForm({ ...projectForm, description: event.target.value }),
-                className: "w-full p-2 mb-3 border rounded-lg",
+                className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400",
                 rows: "2"
             }),
             e('div', { className: "flex gap-2" },
@@ -178,15 +182,15 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                 const metrics = calculateProjectMetrics(project);
                 return e('div', {
                     key: project.id,
-                    className: `p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedProject?.id === project.id ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-blue-300 bg-white'}`
+                    className: `p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedProject?.id === project.id ? 'border-blue-500 bg-slate-700' : 'border-slate-600 hover:border-blue-400 bg-slate-800'}`
                 },
                     e('div', { className: "flex items-start justify-between" },
                         e('div', {
                             onClick: () => onSelectProject(project),
                             className: "flex-1"
                         },
-                            e('h3', { className: "font-semibold text-slate-800" }, project.name),
-                            e('p', { className: "text-sm text-slate-600 mb-1" }, '$', metrics.adjustedPrice.toLocaleString()),
+                            e('h3', { className: "font-semibold text-white" }, project.name),
+                            e('p', { className: "text-sm text-slate-400 mb-1" }, '$', metrics.adjustedPrice.toLocaleString()),
                             e('span', {
                                 className: `inline-block px-2 py-0.5 text-xs font-medium rounded ${getStatusColor(project.status || 'Scheduling')}`
                             }, project.status || 'Scheduling')
@@ -202,11 +206,11 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                                         status: project.status || 'Scheduling'
                                     });
                                 },
-                                className: "p-1 text-blue-600 hover:bg-blue-100 rounded"
+                                className: "p-1 text-blue-400 hover:text-blue-300 hover:bg-blue-900 rounded transition-all duration-200 hover:scale-110"
                             }, e(Icon, { d: "M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z", size: 16 })),
                             e('button', {
                                 onClick: () => handleDeleteProject(project),
-                                className: "p-1 text-red-600 hover:bg-red-100 rounded"
+                                className: "p-1 text-red-400 hover:text-red-300 hover:bg-red-900 rounded transition-all duration-200 hover:scale-110"
                             }, e(Icon, { d: "M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2", size: 16 }))
                         )
                     )
@@ -215,26 +219,26 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
         ),
 
         // Edit Project Form
-        editingProject && e('div', { className: "mt-4 p-4 bg-amber-50 rounded-lg border-2 border-amber-300" },
-            e('h3', { className: "font-semibold mb-3 text-slate-700" }, 'Edit Project'),
+        editingProject && e('div', { className: "mt-4 p-4 bg-slate-700 rounded-lg border-2 border-amber-500" },
+            e('h3', { className: "font-semibold mb-3 text-white" }, 'Edit Project'),
             e('input', {
                 type: "text",
                 placeholder: "Project Name",
                 value: projectForm.name,
                 onChange: event => setProjectForm({ ...projectForm, name: event.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('input', {
                 type: "number",
                 placeholder: "Agreed Price ($)",
                 value: projectForm.agreedPrice,
                 onChange: event => setProjectForm({ ...projectForm, agreedPrice: event.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400"
             }),
             e('select', {
                 value: projectForm.status,
                 onChange: event => setProjectForm({ ...projectForm, status: event.target.value }),
-                className: "w-full p-2 mb-2 border rounded-lg"
+                className: "w-full p-2 mb-2 border border-slate-600 rounded-lg bg-slate-600 text-white"
             },
                 statusOptions.map(status =>
                     e('option', { key: status, value: status }, status)
@@ -244,7 +248,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                 placeholder: "Description",
                 value: projectForm.description,
                 onChange: event => setProjectForm({ ...projectForm, description: event.target.value }),
-                className: "w-full p-2 mb-3 border rounded-lg",
+                className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400",
                 rows: "2"
             }),
             e('div', { className: "flex gap-2" },
