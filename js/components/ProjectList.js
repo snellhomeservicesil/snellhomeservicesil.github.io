@@ -70,7 +70,41 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
         setProjectForm({ name: '', agreedPrice: '', description: '', status: 'Scheduling' });
     };
 
-    const handleDeleteProject = (project) => {
+    const handleDeleteProject = async (project) => {
+        console.log('Delete clicked for project:', project);
+        
+        // First, try to delete from database if this is a saved project
+        if (project.id && typeof project.id === 'string') {
+            try {
+                // Access window's global supabase instance set by App.js
+                const supabaseClient = window.supabase;
+                console.log('Supabase client:', supabaseClient ? 'found' : 'NOT FOUND');
+                
+                if (supabaseClient) {
+                    console.log('Deleting project from database:', project.id);
+                    const { error } = await supabaseClient
+                        .from('projects')
+                        .delete()
+                        .eq('id', project.id);
+                    
+                    if (error) {
+                        console.error('Error deleting from database:', error);
+                        alert('Error deleting project: ' + error.message);
+                        return;
+                    }
+                    console.log('Project deleted from database successfully');
+                } else {
+                    console.warn('Supabase client not available');
+                }
+            } catch (err) {
+                console.error('Error deleting project:', err);
+                alert('Error deleting project: ' + err.message);
+                return;
+            }
+        }
+
+        // Remove from local state
+        console.log('Removing from local state');
         const updatedProjects = projects.filter(p => p.id !== project.id);
         onProjectsChange(updatedProjects);
         if (selectedProject?.id === project.id) {

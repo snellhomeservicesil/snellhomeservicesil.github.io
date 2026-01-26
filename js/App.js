@@ -46,6 +46,9 @@ function App() {
             
             const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             setSupabase(client);
+            
+            // Make supabase available globally for other components
+            window.supabase = client;
 
             // Get current user
             const { data: { user }, error: userError } = await client.auth.getUser();
