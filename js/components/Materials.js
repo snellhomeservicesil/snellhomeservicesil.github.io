@@ -3,13 +3,16 @@ function Materials({ project, onUpdate }) {
     const e = React.createElement;
     const { useState } = React;
 
+    // Helper function (fallback if utils.js not loaded yet)
+    const getTodayDate = () => new Date().toISOString().split('T')[0];
+
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({
         name: '',
         cost: '',
         quantity: '',
-        date: getTodayISODate()
+        date: typeof getTodayISODate !== 'undefined' ? typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate() : getTodayDate()
     });
 
     const handleAdd = () => {
@@ -28,7 +31,7 @@ function Materials({ project, onUpdate }) {
             materials: [...project.materials, newMaterial]
         });
 
-        setForm({ name: '', cost: '', quantity: '', date: getTodayISODate() });
+        setForm({ name: '', cost: '', quantity: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate() });
         setShowForm(false);
     };
 
@@ -45,7 +48,7 @@ function Materials({ project, onUpdate }) {
         });
 
         setEditing(null);
-        setForm({ name: '', cost: '', quantity: '', date: getTodayISODate() });
+        setForm({ name: '', cost: '', quantity: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate() });
     };
 
     const handleDelete = (materialId) => {
@@ -103,7 +106,7 @@ function Materials({ project, onUpdate }) {
                 e('button', {
                     onClick: () => {
                         setShowForm(false);
-                        setForm({ name: '', cost: '', quantity: '', date: getTodayISODate() });
+                        setForm({ name: '', cost: '', quantity: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate() });
                     },
                     className: "px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400"
                 }, e(Icon, { d: "M18 6L6 18M6 6l12 12", size: 16 }))
@@ -148,7 +151,7 @@ function Materials({ project, onUpdate }) {
                 e('button', {
                     onClick: () => {
                         setEditing(null);
-                        setForm({ name: '', cost: '', quantity: '', date: getTodayISODate() });
+                        setForm({ name: '', cost: '', quantity: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate() });
                     },
                     className: "px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400"
                 }, e(Icon, { d: "M18 6L6 18M6 6l12 12", size: 16 }))

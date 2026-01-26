@@ -50,9 +50,16 @@ function TeamMembers({ project, onUpdate }) {
         });
     };
 
+    // Helper function (fallback if utils.js not loaded yet)
+    const getHours = (memberId) => {
+        return project?.hours
+            .filter(h => h.teamMemberId === memberId)
+            .reduce((sum, h) => sum + h.hours, 0) || 0;
+    };
+
     // Calculate labor cost for a team member
     const getLaborCost = (memberId, hourlyRate) => {
-        const totalHours = getTotalHours(project, memberId);
+        const totalHours = typeof getTotalHours !== 'undefined' ? getTotalHours(project, memberId) : getHours(memberId);
         return totalHours * hourlyRate;
     };
 
@@ -147,7 +154,7 @@ function TeamMembers({ project, onUpdate }) {
         // Team Members List
         e('div', { className: "space-y-2" },
             project.teamMembers.map(member => {
-                const totalHours = getTotalHours(project, member.id);
+                const totalHours = typeof getTotalHours !== 'undefined' ? getTotalHours(project, member.id) : getHours(member.id);
                 const laborCost = getLaborCost(member.id, member.hourlyRate);
                 
                 return e('div', {
@@ -161,7 +168,7 @@ function TeamMembers({ project, onUpdate }) {
                                 member.role, ' • $', member.hourlyRate, '/hr • ',
                                 totalHours, ' hrs'
                             ),
-                            e('p', { className: "text-sm font-semibold text-slate-700 mt-1" },
+                            e('p', { className: "text-sm font-semibold text-green-700 mt-1" },
                                 'Labor Cost: $', laborCost.toLocaleString()
                             )
                         ),

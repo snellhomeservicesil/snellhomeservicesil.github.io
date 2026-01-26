@@ -3,11 +3,14 @@ function Payments({ project, onUpdate }) {
     const e = React.createElement;
     const { useState } = React;
 
+    // Helper function (fallback if utils.js not loaded yet)
+    const getTodayDate = () => new Date().toISOString().split('T')[0];
+
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({
         amount: '',
-        date: getTodayISODate(),
+        date: typeof getTodayISODate !== 'undefined' ? typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate() : getTodayDate(),
         description: ''
     });
 
@@ -27,7 +30,7 @@ function Payments({ project, onUpdate }) {
             payments: [...payments, newPayment]
         });
 
-        setForm({ amount: '', date: getTodayISODate(), description: '' });
+        setForm({ amount: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), description: '' });
         setShowForm(false);
     };
 
@@ -45,7 +48,7 @@ function Payments({ project, onUpdate }) {
         });
 
         setEditing(null);
-        setForm({ amount: '', date: getTodayISODate(), description: '' });
+        setForm({ amount: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), description: '' });
     };
 
     const handleDelete = (paymentId) => {
@@ -97,7 +100,7 @@ function Payments({ project, onUpdate }) {
                 e('button', {
                     onClick: () => {
                         setShowForm(false);
-                        setForm({ amount: '', date: getTodayISODate(), description: '' });
+                        setForm({ amount: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), description: '' });
                     },
                     className: "px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400"
                 }, e(Icon, { d: "M18 6L6 18M6 6l12 12", size: 16 }))
@@ -135,7 +138,7 @@ function Payments({ project, onUpdate }) {
                 e('button', {
                     onClick: () => {
                         setEditing(null);
-                        setForm({ amount: '', date: getTodayISODate(), description: '' });
+                        setForm({ amount: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), description: '' });
                     },
                     className: "px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400"
                 }, e(Icon, { d: "M18 6L6 18M6 6l12 12", size: 16 }))

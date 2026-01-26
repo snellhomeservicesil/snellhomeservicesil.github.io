@@ -3,11 +3,18 @@ function HoursLogged({ project, onUpdate }) {
     const e = React.createElement;
     const { useState } = React;
 
+    // Helper functions (fallback if utils.js not loaded yet)
+    const getTodayDate = () => new Date().toISOString().split('T')[0];
+    const getMemberName = (memberId) => {
+        const member = project?.teamMembers.find(m => m.id === memberId);
+        return member ? member.name : 'Unknown';
+    };
+
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({
         teamMemberId: '',
-        date: getTodayISODate(),
+        date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(),
         hours: ''
     });
 
@@ -26,7 +33,7 @@ function HoursLogged({ project, onUpdate }) {
             hours: [...project.hours, newHours]
         });
 
-        setForm({ teamMemberId: '', date: getTodayISODate(), hours: '' });
+        setForm({ teamMemberId: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), hours: '' });
         setShowForm(false);
     };
 
@@ -43,7 +50,7 @@ function HoursLogged({ project, onUpdate }) {
         });
 
         setEditing(null);
-        setForm({ teamMemberId: '', date: getTodayISODate(), hours: '' });
+        setForm({ teamMemberId: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), hours: '' });
     };
 
     const handleDelete = (hoursId) => {
@@ -97,7 +104,7 @@ function HoursLogged({ project, onUpdate }) {
                 e('button', {
                     onClick: () => {
                         setShowForm(false);
-                        setForm({ teamMemberId: '', date: getTodayISODate(), hours: '' });
+                        setForm({ teamMemberId: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), hours: '' });
                     },
                     className: "px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400"
                 }, e(Icon, { d: "M18 6L6 18M6 6l12 12", size: 16 }))
@@ -138,7 +145,7 @@ function HoursLogged({ project, onUpdate }) {
                 e('button', {
                     onClick: () => {
                         setEditing(null);
-                        setForm({ teamMemberId: '', date: getTodayISODate(), hours: '' });
+                        setForm({ teamMemberId: '', date: typeof getTodayISODate !== 'undefined' ? getTodayISODate() : getTodayDate(), hours: '' });
                     },
                     className: "px-4 py-2 bg-slate-300 text-slate-700 rounded-lg hover:bg-slate-400"
                 }, e(Icon, { d: "M18 6L6 18M6 6l12 12", size: 16 }))
@@ -155,7 +162,7 @@ function HoursLogged({ project, onUpdate }) {
                     e('div', { className: "flex items-center justify-between" },
                         e('div', null,
                             e('h3', { className: "font-semibold text-slate-800" },
-                                getTeamMemberName(project, hour.teamMemberId)
+                                getMemberName(hour.teamMemberId)
                             ),
                             e('p', { className: "text-sm text-slate-600" },
                                 hour.date, ' • ', hour.hours, ' hours'
