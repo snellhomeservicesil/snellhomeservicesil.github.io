@@ -139,15 +139,15 @@ function App() {
     return e('div', { className: "min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6" },
         e('div', { className: "max-w-7xl mx-auto" },
             // Header
-            e('div', { className: "bg-white rounded-xl shadow-lg p-6 mb-6 flex items-center justify-between" },
+            e('div', { className: "bg-white rounded-xl shadow-lg p-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" },
                 e('div', { },
-                    e('h1', { className: "text-3xl font-bold text-slate-800 mb-2" }, 'Construction Job Tracker'),
+                    e('h1', { className: "text-3xl font-bold text-slate-800 mb-2" }, 'Construction Projects Tracker'),
                     e('p', { className: "text-slate-600" }, 'Manage your projects, team, hours, materials, payments, and budgets'),
                     currentUser && e('p', { className: "text-sm text-slate-500 mt-2" }, `Logged in as: ${currentUser.email}`)
                 ),
                 e('button', { 
                     onClick: handleLogout,
-                    className: "bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                    className: "bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg whitespace-nowrap"
                 }, 'Logout')
             ),
 

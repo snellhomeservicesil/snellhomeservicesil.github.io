@@ -1,4 +1,4 @@
-// Utility functions for the Construction Job Tracker
+// Utility functions for the Construction Projects Tracker
 
 // Calculate all project financial metrics
 function calculateProjectMetrics(project) {
