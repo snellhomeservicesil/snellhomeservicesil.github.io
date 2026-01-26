@@ -139,16 +139,39 @@ function App() {
     return e('div', { className: "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-6" },
         e('div', { className: "max-w-7xl mx-auto" },
             // Header
-            e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border border-slate-700" },
-                e('div', { },
-                    e('h1', { className: "text-3xl font-bold text-white mb-2" }, 'Construction Projects Tracker'),
-                    e('p', { className: "text-slate-300" }, 'Manage your projects, team, hours, materials, payments, and budgets'),
-                    currentUser && e('p', { className: "text-sm text-slate-400 mt-2" }, `Logged in as: ${currentUser.email}`)
-                ),
-                e('button', { 
-                    onClick: handleLogout,
-                    className: "bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg whitespace-nowrap"
-                }, 'Logout')
+            e('div', { className: "bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl shadow-lg p-6 mb-6 border border-slate-600 border-opacity-50" },
+                e('div', { className: "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6" },
+                    e('div', { className: "flex-1" },
+                        e('div', { className: "flex items-center gap-3 mb-3" },
+                            e('div', { className: "w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md" },
+                                e('svg', { 
+                                    viewBox: "0 0 24 24",
+                                    className: "w-6 h-6 text-white",
+                                    style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' }
+                                },
+                                    e('path', { d: "M3 12l9-9 9 9M4 13v6a2 2 0 002 2h12a2 2 0 002-2v-6M9 18h6" })
+                                )
+                            ),
+                            e('h1', { className: "text-3xl font-bold text-white" }, 'Construction Projects Tracker')
+                        ),
+                        e('p', { className: "text-slate-300 ml-13" }, 'Manage your projects, team, hours, materials, payments, and budgets'),
+                        currentUser && e('p', { className: "text-sm text-slate-400 mt-2 ml-13 flex items-center gap-2" }, 
+                            e('svg', { viewBox: "0 0 24 24", className: "w-4 h-4", style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' } },
+                                e('path', { d: "M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 3a4 4 0 110 8 4 4 0 010-8z" })
+                            ),
+                            currentUser.email
+                        )
+                    ),
+                    e('button', { 
+                        onClick: handleLogout,
+                        className: "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg whitespace-nowrap flex items-center justify-center gap-2 self-start sm:self-center"
+                    }, 
+                        e('svg', { viewBox: "0 0 24 24", className: "w-5 h-5", style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' } },
+                            e('path', { d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" })
+                        ),
+                        'Logout'
+                    )
+                )
             ),
 
             // Loading state
