@@ -177,7 +177,10 @@ function App() {
             // Loading state
             loading
                 ? e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-12 text-center border border-slate-700" },
-                    e('p', { className: "text-slate-300 text-lg" }, 'Loading projects...')
+                    e('div', { className: "flex flex-col items-center gap-4" },
+                        e('div', { className: "w-12 h-12 border-4 border-slate-600 border-t-blue-500 rounded-full animate-spin" }),
+                        e('p', { className: "text-slate-300 text-lg" }, 'Loading your projects...')
+                    )
                 )
                 : e('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-6" },
                     // Sidebar - Project List
@@ -201,11 +204,30 @@ function App() {
                                 e(Materials, { project: selectedProject, onUpdate: updateProject }),
                                 e(Payments, { project: selectedProject, onUpdate: updateProject })
                             )
-                            : e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-12 text-center border border-slate-700" },
-                                e(Icon, { d: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z", size: 64, className: "text-slate-600 mx-auto mb-4" }),
-                                e('h2', { className: "text-2xl font-bold text-white mb-2" }, 'No Project Selected'),
-                                e('p', { className: "text-slate-400" }, 'Select a project from the sidebar or create a new one to get started')
-                            )
+                            : projects.length === 0
+                                ? e('div', { className: "bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl shadow-lg p-12 text-center border border-slate-600" },
+                                    e('div', { className: "mb-6" },
+                                        e('div', { className: "w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" },
+                                            e('svg', { viewBox: "0 0 24 24", className: "w-10 h-10 text-white", style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' } },
+                                                e('path', { d: "M12 4v16m8-8H4" })
+                                            )
+                                        )
+                                    ),
+                                    e('h2', { className: "text-3xl font-bold text-white mb-3" }, 'Welcome to Construction Tracker'),
+                                    e('p', { className: "text-slate-300 mb-6 text-lg" }, 'Get started by creating your first project'),
+                                    e('p', { className: "text-slate-400" }, 'Click the + button in the Projects sidebar to create a new project and start tracking')
+                                )
+                                : e('div', { className: "bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl shadow-lg p-12 text-center border border-slate-600" },
+                                    e('div', { className: "mb-6" },
+                                        e('div', { className: "w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-slate-600" },
+                                            e('svg', { viewBox: "0 0 24 24", className: "w-10 h-10 text-slate-400", style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' } },
+                                                e('path', { d: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" })
+                                            )
+                                        )
+                                    ),
+                                    e('h2', { className: "text-2xl font-bold text-white mb-2" }, 'No Project Selected'),
+                                    e('p', { className: "text-slate-400" }, 'Select a project from the sidebar to view its details and manage tasks')
+                                )
                     )
                 )
         )
