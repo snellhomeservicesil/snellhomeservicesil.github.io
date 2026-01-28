@@ -55,7 +55,7 @@ function BudgetOverview({ project }) {
             ),
             e('div', { className: "p-4 bg-emerald-900 rounded-lg border border-emerald-700" },
                 e('p', { className: "text-sm text-emerald-300 mb-1" }, 'Remaining Budget'),
-                e('p', { className: "text-xl md:text-2xl font-bold text-emerald-400 break-words" }, '$', metrics.remainingBudget.toLocaleString())
+                e('p', { className: "text-xl md:text-2xl font-bold text-emerald-400 break-words" }, '$', metrics.remainingBudget.toFixed(2))
             ),
             e('div', { className: "p-4 bg-teal-900 rounded-lg border-2 border-teal-600" },
                 e('p', { className: "text-sm text-teal-300 mb-1" }, 'Payments Received'),
