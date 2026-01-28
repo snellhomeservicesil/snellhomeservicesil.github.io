@@ -40,6 +40,17 @@ function calculateProjectMetrics(project) {
     };
 }
 
+function formatCurrency(value) {
+    if (value == null || isNaN(value)) return '$0';
+    return value.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0
+    });
+}
+
+
+
 // Get team member name by ID
 function getTeamMemberName(project, teamMemberId) {
     const member = project?.teamMembers.find(m => m.id === teamMemberId);
