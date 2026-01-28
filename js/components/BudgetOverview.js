@@ -49,6 +49,10 @@ function BudgetOverview({ project }) {
                 e('p', { className: "text-sm text-pink-300 mb-1" }, 'Labor Cost'),
                 e('p', { className: "text-2xl font-bold text-pink-400" }, '$', metrics.totalLaborCost.toLocaleString())
             ),
+            e('div', { className: "p-4 bg-cyan-900 rounded-lg border border-cyan-700" },
+                e('p', { className: "text-sm text-cyan-300 mb-1" }, 'Travel Expenses'),
+                e('p', { className: "text-2xl font-bold text-cyan-400" }, '$', metrics.totalTravelExpenses.toFixed(2))
+            ),
             e('div', { className: "p-4 bg-emerald-900 rounded-lg border border-emerald-700" },
                 e('p', { className: "text-sm text-emerald-300 mb-1" }, 'Remaining Budget'),
                 e('p', { className: "text-2xl font-bold text-emerald-400" }, '$', metrics.remainingBudget.toLocaleString())

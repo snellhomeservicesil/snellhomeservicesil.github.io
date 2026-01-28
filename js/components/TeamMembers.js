@@ -67,6 +67,13 @@ function TeamMembers({ project, onUpdate }) {
         return totalHours * hourlyRate;
     };
 
+    // Calculate travel cost for a team member
+    const getTravelCost = (memberId) => {
+        return (project.travelExpenses || [])
+            .filter(t => t.teamMemberId === memberId)
+            .reduce((sum, t) => sum + t.cost, 0);
+    };
+
     return e('div', { className: "bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700" },
         e('div', { className: "flex items-center justify-between mb-4" },
             e('div', { className: "flex items-center gap-2" },
@@ -163,6 +170,7 @@ function TeamMembers({ project, onUpdate }) {
             project.teamMembers.map(member => {
                 const totalHours = typeof getTotalHours !== 'undefined' ? getTotalHours(project, member.id) : getHours(member.id);
                 const laborCost = getLaborCost(member.id, member.hourlyRate);
+                const travelCost = getTravelCost(member.id);
                 
                 return e('div', {
                     key: member.id,
@@ -177,6 +185,9 @@ function TeamMembers({ project, onUpdate }) {
                             ),
                             e('p', { className: "text-sm font-semibold text-green-400 mt-1" },
                                 'Labor Cost: $', laborCost.toLocaleString()
+                            ),
+                            travelCost > 0 && e('p', { className: "text-sm font-semibold text-cyan-400" },
+                                'Travel Cost: $', travelCost.toFixed(2)
                             )
                         ),
                         e('div', { className: "flex gap-1" },

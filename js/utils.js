@@ -10,7 +10,8 @@ function calculateProjectMetrics(project) {
             remainingBudget: 0,
             totalLaborCost: 0,
             totalPayments: 0,
-            outstandingBalance: 0
+            outstandingBalance: 0,
+            totalTravelExpenses: 0
         };
     }
 
@@ -21,9 +22,10 @@ function calculateProjectMetrics(project) {
         return sum + (member ? he.hours * member.hourlyRate : 0);
     }, 0);
     const totalPayments = (project.payments || []).reduce((sum, pay) => sum + pay.amount, 0);
+    const totalTravelExpenses = (project.travelExpenses || []).reduce((sum, t) => sum + t.cost, 0);
     
     const adjustedPrice = project.agreedPrice + totalChangeOrders;
-    const remainingBudget = adjustedPrice - totalMaterials - totalLaborCost;
+    const remainingBudget = adjustedPrice - totalMaterials - totalLaborCost - totalTravelExpenses;
     const outstandingBalance = adjustedPrice - totalPayments;
 
     return {
@@ -33,7 +35,8 @@ function calculateProjectMetrics(project) {
         remainingBudget,
         totalLaborCost,
         totalPayments,
-        outstandingBalance
+        outstandingBalance,
+        totalTravelExpenses
     };
 }
 

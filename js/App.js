@@ -236,6 +236,7 @@ function App() {
                                 e(HoursLogged, { project: selectedProject, onUpdate: updateProject }),
                                 e(ChangeOrders, { project: selectedProject, onUpdate: updateProject }),
                                 e(Materials, { project: selectedProject, onUpdate: updateProject }),
+                                e(TravelExpenses, { project: selectedProject, onUpdate: updateProject }),
                                 e(Payments, { project: selectedProject, onUpdate: updateProject })
                             )
                             : projects.length === 0
