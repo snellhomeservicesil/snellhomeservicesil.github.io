@@ -9,9 +9,9 @@ function calculateProjectMetrics(project) {
             totalChangeOrders: 0,
             remainingBudget: 0,
             totalLaborCost: 0,
-            totalPayments: 0,
-            outstandingBalance: 0,
-            totalTravelExpenses: 0
+            totalInvoicesPaid: 0,
+            totalInvoices: 0,
+            outstandingBalance: 0
         };
     }
 
@@ -21,12 +21,16 @@ function calculateProjectMetrics(project) {
         const member = project.teamMembers.find(m => m.id === he.teamMemberId);
         return sum + (member ? he.hours * member.hourlyRate : 0);
     }, 0);
-    const totalPayments = (project.payments || []).reduce((sum, pay) => sum + pay.amount, 0);
-    const totalTravelExpenses = (project.travelExpenses || []).reduce((sum, t) => sum + t.cost, 0);
+    const totalInvoicesPaid = (project.invoices || [])
+        .filter(inv => inv.status === 'Paid')
+        .reduce((sum, inv) => sum + inv.amount, 0);
+    const totalInvoices = (project.invoices || [])
+        .filter(inv => inv.status != 'Cancelled')
+        .reduce((sum, inv) => sum + inv.amount, 0);
     
     const adjustedPrice = project.agreedPrice + totalChangeOrders;
-    const remainingBudget = adjustedPrice - totalMaterials - totalLaborCost - totalTravelExpenses;
-    const outstandingBalance = adjustedPrice - totalPayments;
+    const remainingBudget = adjustedPrice - totalMaterials - totalLaborCost;
+    const outstandingBalance = adjustedPrice - totalInvoicesPaid;
 
     return {
         adjustedPrice,
@@ -34,9 +38,9 @@ function calculateProjectMetrics(project) {
         totalChangeOrders,
         remainingBudget,
         totalLaborCost,
-        totalPayments,
-        outstandingBalance,
-        totalTravelExpenses
+        totalInvoicesPaid,
+        totalInvoices,
+        outstandingBalance
     };
 }
 
@@ -48,8 +52,6 @@ function formatCurrency(value) {
         minimumFractionDigits: 0
     });
 }
-
-
 
 // Get team member name by ID
 function getTeamMemberName(project, teamMemberId) {

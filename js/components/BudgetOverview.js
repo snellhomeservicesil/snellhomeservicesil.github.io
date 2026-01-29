@@ -57,8 +57,12 @@ function BudgetOverview({ project }) {
                 e('p', { className: "text-xl md:text-2xl font-bold text-emerald-400 break-words" }, formatCurrency(metrics.remainingBudget))
             ),
             e('div', { className: "p-4 bg-teal-900 rounded-lg border-2 border-teal-600" },
-                e('p', { className: "text-sm text-teal-300 mb-1" }, 'Payments Received'),
-                e('p', { className: "text-xl md:text-2xl font-bold text-teal-400 break-words" }, formatCurrency(metrics.totalPayments))
+                e('p', { className: "text-sm text-teal-300 mb-1" }, 'Invoices Paid'),
+                e('p', { className: "text-xl md:text-2xl font-bold text-teal-400 break-words" }, formatCurrency(metrics.totalInvoicesPaid))
+            ),
+            e('div', { className: "p-4 bg-teal-900 rounded-lg border-2 border-teal-600" },
+                e('p', { className: "text-sm text-teal-300 mb-1" }, 'Outstanding Invoices'),
+                e('p', { className: "text-xl md:text-2xl font-bold text-teal-400 break-words" }, formatCurrency(metrics.totalInvoices - metrics.totalInvoicesPaid))
             ),
             e('div', { className: "p-4 bg-amber-900 rounded-lg border-2 border-amber-600" },
                 e('p', { className: "text-sm text-amber-300 mb-1" }, 'Outstanding Balance'),

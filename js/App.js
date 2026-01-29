@@ -182,7 +182,7 @@ function App() {
                             ),
                             e('h1', { className: "text-3xl font-bold text-white" }, 'Construction Projects Tracker')
                         ),
-                        e('p', { className: "text-slate-300 ml-13" }, 'Manage your projects, team, hours, materials, payments, and budgets'),
+                        e('p', { className: "text-slate-300 ml-13" }, 'Manage your projects, team, hours, materials, invoices, and budgets'),
                         currentUser && e('p', { className: "text-sm text-slate-400 mt-2 ml-13 flex items-center gap-2" }, 
                             e('svg', { viewBox: "0 0 24 24", className: "w-4 h-4", style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' } },
                                 e('path', { d: "M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 3a4 4 0 110 8 4 4 0 010-8z" })
@@ -236,8 +236,7 @@ function App() {
                                 e(HoursLogged, { project: selectedProject, onUpdate: updateProject }),
                                 e(ChangeOrders, { project: selectedProject, onUpdate: updateProject }),
                                 e(Materials, { project: selectedProject, onUpdate: updateProject }),
-                                e(TravelExpenses, { project: selectedProject, onUpdate: updateProject }),
-                                e(Payments, { project: selectedProject, onUpdate: updateProject })
+                                e(Invoices, { project: selectedProject, onUpdate: updateProject })
                             )
                             : projects.length === 0
                                 ? e('div', { className: "bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl shadow-lg p-12 text-center border border-slate-600" },
