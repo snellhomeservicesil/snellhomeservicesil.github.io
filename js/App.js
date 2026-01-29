@@ -234,6 +234,7 @@ function App() {
                                 e(BudgetOverview, { project: selectedProject }),
                                 e(TeamMembers, { project: selectedProject, onUpdate: updateProject }),
                                 e(HoursLogged, { project: selectedProject, onUpdate: updateProject }),
+                                e(TravelExpenses, { project: selectedProject, onUpdate: updateProject }),
                                 e(ChangeOrders, { project: selectedProject, onUpdate: updateProject }),
                                 e(Materials, { project: selectedProject, onUpdate: updateProject }),
                                 e(Invoices, { project: selectedProject, onUpdate: updateProject })

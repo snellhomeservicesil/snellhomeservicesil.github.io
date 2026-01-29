@@ -11,10 +11,12 @@ function calculateProjectMetrics(project) {
             totalLaborCost: 0,
             totalInvoicesPaid: 0,
             totalInvoices: 0,
-            outstandingBalance: 0
+            outstandingBalance: 0,
+            totalTravelExpenses: 0
         };
     }
 
+    const totalTravelExpenses = project.travelExpenses.reduce((sum, te) => sum + te.amount, 0);
     const totalChangeOrders = project.changeOrders.reduce((sum, co) => sum + co.price, 0);
     const totalMaterials = project.materials.reduce((sum, m) => sum + m.cost, 0);
     const totalLaborCost = project.hours.reduce((sum, he) => {
@@ -40,7 +42,8 @@ function calculateProjectMetrics(project) {
         totalLaborCost,
         totalInvoicesPaid,
         totalInvoices,
-        outstandingBalance
+        outstandingBalance,
+        totalTravelExpenses
     };
 }
 
