@@ -9,6 +9,7 @@ function calculateProjectMetrics(project) {
             totalChangeOrders: 0,
             remainingBudget: 0,
             totalLaborCost: 0,
+            totalLaborHours: 0,
             totalInvoicesPaid: 0,
             totalInvoices: 0,
             outstandingBalance: 0,
@@ -19,6 +20,7 @@ function calculateProjectMetrics(project) {
     const totalTravelExpenses = project.travelExpenses.reduce((sum, te) => sum + te.cost, 0);
     const totalChangeOrders = project.changeOrders.reduce((sum, co) => sum + co.price, 0);
     const totalMaterials = project.materials.reduce((sum, m) => sum + m.cost, 0);
+    const totalLaborHours = project.hours.reduce((sum, he) => sum + he.hours, 0);
     const totalLaborCost = project.hours.reduce((sum, he) => {
         const member = project.teamMembers.find(m => m.id === he.teamMemberId);
         return sum + (member ? he.hours * member.hourlyRate : 0);
@@ -40,6 +42,7 @@ function calculateProjectMetrics(project) {
         totalChangeOrders,
         remainingBudget,
         totalLaborCost,
+        totalLaborHours,
         totalInvoicesPaid,
         totalInvoices,
         outstandingBalance,

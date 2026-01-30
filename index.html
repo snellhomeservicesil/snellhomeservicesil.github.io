@@ -455,19 +455,27 @@
           emailRedirectTo: window.location.origin + '/main.html'
         }
       });
-
+      
       setButtonsDisabled(false);
       setButtonLoading(signupBtn, false);
 
       if (error) {
-        console.error('Signup error:', error);
-        showMessage(error.message || 'Signup failed. Please try again.', 'error');
-      } else {
-        showMessage('Signup successful! Check your email to confirm your account.', 'success');
-        // Clear form after successful signup
-        emailInput.value = '';
-        passwordInput.value = '';
+        showMessage(error.message, 'error');
+        return;
       }
+
+      if (!data?.user) {
+        showMessage(
+          'If an account already exists for this email, try logging in instead.',
+          'info'
+        );
+        return;
+      }
+
+      showMessage(
+        'Signup successful! Check your email to confirm your account.',
+        'success'
+      );
     });
 
     document.getElementById("loginForm").addEventListener("submit", async (event) => {
