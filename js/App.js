@@ -30,6 +30,14 @@ function App() {
             } else {
                 console.log('Loaded projects:', data);
                 setProjects(data || []);
+                
+                // Update selected project if it was loaded
+                if (selectedProject) {
+                    const updatedSelected = data.find(p => p.id === selectedProject.id);
+                    if (updatedSelected) {
+                        setSelectedProject(updatedSelected);
+                    }
+                }
             }
         } catch (err) {
             console.error('Error loading projects:', err);
@@ -103,12 +111,21 @@ function App() {
         initSupabase();
     }, []);
 
-    // Save projects to Supabase whenever they change
-    useEffect(() => {
-        if (supabase && currentUser && projects.length > 0) {
-            saveProjectsToSupabase();
+    // Custom setProjects that also saves to database immediately
+    const setProjectsAndSave = async (newProjects) => {
+        // If it's a function, call it with current projects
+        const projectsToSet = typeof newProjects === 'function' ? newProjects(projects) : newProjects;
+        
+        setProjects(projectsToSet);
+        
+        // Save immediately to database
+        if (supabase && currentUser && projectsToSet.length > 0) {
+            await saveProjectsToSupabase(projectsToSet);
         }
-    }, [projects]);
+    };
+
+    // Note: We save projects immediately when they change, not via useEffect
+    // This prevents race conditions between saves and refreshes
 
     // Logout function
     const handleLogout = async () => {
@@ -126,7 +143,7 @@ function App() {
     };
 
     // Save projects to Supabase
-    const saveProjectsToSupabase = async () => {
+    const saveProjectsToSupabase = async (projectsToSave = projects) => {
         if (!supabase || !currentUser) {
             console.warn('Cannot save: Missing supabase or currentUser');
             return;
@@ -134,16 +151,16 @@ function App() {
 
         try {
             isSavingRef.current = true;
-            console.log('Saving projects for user:', currentUser.id, 'Count:', projects.length);
+            console.log('Saving projects for user:', currentUser.id, 'Count:', projectsToSave.length);
             
-            if (projects.length === 0) {
+            if (projectsToSave.length === 0) {
                 console.log('No projects to save');
                 isSavingRef.current = false;
                 return;
             }
 
             // Prepare projects with user_id
-            const projectsToSave = projects.map(p => ({
+            const projectsWithUser = projectsToSave.map(p => ({
                 ...p,
                 user_id: currentUser.id
             }));
@@ -152,7 +169,7 @@ function App() {
             // onConflict: 'id' means if a project with this ID already exists, update it instead
             const { data, error: upsertError } = await supabase
                 .from('projects')
-                .upsert(projectsToSave, { onConflict: 'id' });
+                .upsert(projectsWithUser, { onConflict: 'id' });
 
             if (upsertError) {
                 console.error('Upsert error:', upsertError);
@@ -161,6 +178,9 @@ function App() {
             }
 
             console.log('Projects saved successfully');
+            
+            // Add a small delay to ensure the database has processed the write
+            await new Promise(resolve => setTimeout(resolve, 100));
         } catch (error) {
             console.error('Error saving projects:', error);
         } finally {
@@ -169,9 +189,15 @@ function App() {
     };
 
     // Update a project and keep selectedProject in sync
-    const updateProject = (updatedProject) => {
-        setProjects(projects.map(p => p.id === updatedProject.id ? updatedProject : p));
+    const updateProject = async (updatedProject) => {
+        const newProjects = projects.map(p => p.id === updatedProject.id ? updatedProject : p);
+        setProjects(newProjects);
         setSelectedProject(updatedProject);
+        
+        // Save immediately to database and wait for it to complete
+        if (supabase && currentUser) {
+            await saveProjectsToSupabase(newProjects);
+        }
     };
 
     return e('div', { className: "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-6" },
@@ -200,14 +226,16 @@ function App() {
                             currentUser.email
                         )
                     ),
-                    e('button', { 
-                        onClick: handleLogout,
-                        className: "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg whitespace-nowrap flex items-center justify-center gap-2 self-start sm:self-center"
-                    }, 
-                        e('svg', { viewBox: "0 0 24 24", className: "w-5 h-5", style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' } },
-                            e('path', { d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" })
-                        ),
-                        'Logout'
+                    e('div', { className: "flex gap-2 self-start sm:self-center" },
+                        e('button', { 
+                            onClick: handleLogout,
+                            className: "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg whitespace-nowrap flex items-center justify-center gap-2"
+                        }, 
+                            e('svg', { viewBox: "0 0 24 24", className: "w-5 h-5", style: { stroke: 'currentColor', strokeWidth: 2, fill: 'none' } },
+                                e('path', { d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" })
+                            ),
+                            'Logout'
+                        )
                     )
                 )
             ),
@@ -226,12 +254,17 @@ function App() {
                         e(ProjectList, {
                             projects: projects,
                             selectedProject: selectedProject,
-                            onSelectProject: (project) => {
+                            onSelectProject: async (project) => {
                                 setSelectedProject(project);
-                                // Don't refresh immediately - let the save complete first
-                                // The refresh will happen naturally when needed
+                                
+                                // Always refresh from database when selecting a project
+                                // This ensures we get the latest data from other devices
+                                if (project && project.id && supabase && !isSavingRef.current) {
+                                    console.log('Refreshing selected project:', project.id);
+                                    await refreshSelectedProject(project.id);
+                                }
                             },
-                            onProjectsChange: setProjects
+                            onProjectsChange: setProjectsAndSave
                         })
                     ),
 

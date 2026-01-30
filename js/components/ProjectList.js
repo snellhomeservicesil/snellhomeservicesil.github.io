@@ -1,7 +1,7 @@
 // ProjectList Component - Sidebar for managing projects
 function ProjectList({ projects, selectedProject, onSelectProject, onProjectsChange }) {
     const e = React.createElement;
-    const { useState } = React;
+    const { useState, useEffect } = React;
 
     const [showProjectForm, setShowProjectForm] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
@@ -11,6 +11,14 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
         description: '',
         status: 'Scheduling'
     });
+
+    // Close editing form when selected project changes
+    useEffect(() => {
+        if (editingProject && selectedProject && editingProject.id !== selectedProject.id) {
+            setEditingProject(null);
+            setProjectForm({ name: '', agreedPrice: '', description: '', status: 'Scheduling' });
+        }
+    }, [selectedProject]);
 
     const statusOptions = [
         'Scheduling',
@@ -169,7 +177,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                 value: projectForm.description,
                 onChange: event => setProjectForm({ ...projectForm, description: event.target.value }),
                 className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400",
-                rows: "2"
+                rows: "8"
             }),
             e('div', { className: "flex gap-2" },
                 e('button', {
@@ -262,7 +270,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                 value: projectForm.description,
                 onChange: event => setProjectForm({ ...projectForm, description: event.target.value }),
                 className: "w-full p-2 mb-3 border border-slate-600 rounded-lg bg-slate-600 text-white placeholder-slate-400",
-                rows: "2"
+                rows: "8"
             }),
             e('div', { className: "flex gap-2" },
                 e('button', {
