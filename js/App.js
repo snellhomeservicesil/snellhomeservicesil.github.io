@@ -1,7 +1,7 @@
 // Main App Component
 function App() {
     const e = React.createElement;
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useRef } = React;
 
     // State
     const [projects, setProjects] = useState([]);
@@ -9,6 +9,9 @@ function App() {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [supabase, setSupabase] = useState(null);
+    
+    // Track if we're in the middle of saving to prevent refresh conflicts
+    const isSavingRef = useRef(false);
 
     // Load projects from Supabase
     const loadProjectsFromSupabase = async (client, userId) => {
@@ -38,7 +41,10 @@ function App() {
 
     // Refresh a single project from the database
     const refreshSelectedProject = async (projectId) => {
-        if (!supabase || !projectId) return;
+        if (!supabase || !projectId || isSavingRef.current) {
+            console.log('Skipping refresh - saving in progress');
+            return;
+        }
         
         try {
             console.log('Refreshing project data for:', projectId);
@@ -57,7 +63,7 @@ function App() {
                 console.log('Project refreshed:', data);
                 setSelectedProject(data);
                 // Also update in the projects list
-                setProjects(projects.map(p => p.id === projectId ? data : p));
+                setProjects(prev => prev.map(p => p.id === projectId ? data : p));
             }
         } catch (err) {
             console.error('Error refreshing project:', err);
@@ -127,10 +133,12 @@ function App() {
         }
 
         try {
+            isSavingRef.current = true;
             console.log('Saving projects for user:', currentUser.id, 'Count:', projects.length);
             
             if (projects.length === 0) {
                 console.log('No projects to save');
+                isSavingRef.current = false;
                 return;
             }
 
@@ -155,6 +163,8 @@ function App() {
             console.log('Projects saved successfully');
         } catch (error) {
             console.error('Error saving projects:', error);
+        } finally {
+            isSavingRef.current = false;
         }
     };
 
@@ -218,10 +228,8 @@ function App() {
                             selectedProject: selectedProject,
                             onSelectProject: (project) => {
                                 setSelectedProject(project);
-                                // Refresh the project data from the database
-                                if (project && project.id) {
-                                    refreshSelectedProject(project.id);
-                                }
+                                // Don't refresh immediately - let the save complete first
+                                // The refresh will happen naturally when needed
                             },
                             onProjectsChange: setProjects
                         })
@@ -234,7 +242,6 @@ function App() {
                                 e(BudgetOverview, { project: selectedProject }),
                                 e(TeamMembers, { project: selectedProject, onUpdate: updateProject }),
                                 e(HoursLogged, { project: selectedProject, onUpdate: updateProject }),
-                                e(TravelExpenses, { project: selectedProject, onUpdate: updateProject }),
                                 e(ChangeOrders, { project: selectedProject, onUpdate: updateProject }),
                                 e(Materials, { project: selectedProject, onUpdate: updateProject }),
                                 e(Invoices, { project: selectedProject, onUpdate: updateProject })

@@ -59,16 +59,26 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
     const handleUpdateProject = () => {
         if (!projectForm.name.trim() || !projectForm.agreedPrice) return;
 
+        const updatedProject = {
+            ...editingProject,
+            name: projectForm.name.trim(),
+            agreedPrice: parseFloat(projectForm.agreedPrice),
+            description: projectForm.description.trim(),
+            status: projectForm.status,
+            updated_at: new Date().toISOString()
+        };
+
         const updatedProjects = projects.map(p =>
-            p.id === editingProject.id
-                ? { ...p, name: projectForm.name.trim(), agreedPrice: parseFloat(projectForm.agreedPrice), description: projectForm.description.trim(), status: projectForm.status }
-                : p
+            p.id === editingProject.id ? updatedProject : p
         );
 
         onProjectsChange(updatedProjects);
+        
+        // Update selected project if it's the one being edited
         if (selectedProject?.id === editingProject.id) {
-            onSelectProject({ ...selectedProject, name: projectForm.name.trim(), agreedPrice: parseFloat(projectForm.agreedPrice), description: projectForm.description.trim(), status: projectForm.status });
+            onSelectProject(updatedProject);
         }
+        
         setEditingProject(null);
         setProjectForm({ name: '', agreedPrice: '', description: '', status: 'Scheduling' });
     };
@@ -205,7 +215,7 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
                                     setProjectForm({
                                         name: project.name,
                                         agreedPrice: project.agreedPrice.toString(),
-                                        description: project.description,
+                                        description: project.description || '',
                                         status: project.status || 'Scheduling'
                                     });
                                 },
