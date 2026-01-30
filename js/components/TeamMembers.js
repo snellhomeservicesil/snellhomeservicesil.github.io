@@ -171,6 +171,9 @@ function TeamMembers({ project, onUpdate }) {
                 const totalHours = typeof getTotalHours !== 'undefined' ? getTotalHours(project, member.id) : getHours(member.id);
                 const laborCost = getLaborCost(member.id, member.hourlyRate);
                 const travelCost = getTravelCost(member.id);
+                const laborPercentage = getTotalLaborHoursForProject(project) > 0
+                    ? ((totalHours / getTotalLaborHoursForProject(project)) * 100).toFixed(1)
+                    : 0;
                 
                 return e('div', {
                     key: member.id,
@@ -181,7 +184,7 @@ function TeamMembers({ project, onUpdate }) {
                             e('h3', { className: "font-semibold text-white" }, member.name),
                             e('p', { className: "text-sm text-slate-400" },
                                 member.role, ' • $', member.hourlyRate, '/hr • ',
-                                totalHours, ' hrs'
+                                totalHours, ' hrs • ', laborPercentage, '%'
                             ),
                             e('p', { className: "text-sm font-semibold text-green-400 mt-1" },
                                 'Labor Cost: $', laborCost.toLocaleString()

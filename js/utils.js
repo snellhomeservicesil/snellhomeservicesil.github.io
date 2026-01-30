@@ -72,6 +72,11 @@ function getTotalHours(project, teamMemberId) {
         .reduce((sum, h) => sum + h.hours, 0) || 0;
 }
 
+function getTotalLaborHoursForProject(project) {
+    return project?.hours
+        .reduce((sum, h) => sum + h.hours, 0) || 0;
+}
+
 // Get today's date in ISO format
 function getTodayISODate() {
     return new Date().toISOString().split('T')[0];

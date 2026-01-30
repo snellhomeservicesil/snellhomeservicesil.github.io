@@ -45,7 +45,7 @@ function BudgetOverview({ project }) {
                 e('p', { className: "text-xl md:text-2xl font-bold text-orange-400 break-words" }, formatCurrency(metrics.totalMaterials))
             ),
             e('div', { className: "p-4 bg-pink-900 rounded-lg border border-pink-700" },
-                e('p', { className: "text-sm text-pink-300 mb-1" }, 'Total Labor Hours'),
+                e('p', { className: "text-sm text-pink-300 mb-1" }, 'Labor Hours'),
                 e('p', { className: "text-xl md:text-2xl font-bold text-pink-400 break-words" }, (metrics.totalLaborHours))
             ),
             e('div', { className: "p-4 bg-pink-900 rounded-lg border border-pink-700" },
