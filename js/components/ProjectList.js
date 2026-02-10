@@ -54,7 +54,9 @@ function ProjectList({ projects, selectedProject, onSelectProject, onProjectsCha
             hours: [],
             changeOrders: [],
             materials: [],
-            payments: [],
+            invoices: [],
+            travelExpenses: [],
+            fuelPrices: [],
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
         };
